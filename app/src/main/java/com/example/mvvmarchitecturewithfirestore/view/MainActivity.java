@@ -1,8 +1,10 @@
-package com.example.mvvmarchitecturewithfirestore;
+package com.example.mvvmarchitecturewithfirestore.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.mvvmarchitecturewithfirestore.R;
 
 public class MainActivity extends AppCompatActivity {
 
