@@ -1,5 +1,7 @@
 package com.example.mvvmarchitecturewithfirestore.repository;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -65,5 +67,24 @@ public class SignInRepository {
 
         return authMutableLiveData;
 
+    }
+
+    //collect user info
+    public  MutableLiveData<SignInUser> collectUserData(){
+
+        MutableLiveData<SignInUser> colloectMutabaleLivaData = new MutableLiveData<>();
+
+        FirebaseUser currentUser= firebaseAuth.getCurrentUser();
+
+        if (currentUser !=null){
+             String  uId = currentUser.getUid();
+             String  name = currentUser.getDisplayName();
+            String email= currentUser.getEmail();
+            Uri getImageUrl= currentUser.getPhotoUrl();
+            String imageUrl= getImageUrl.toString();
+            SignInUser user= new SignInUser(uId,name,email,imageUrl);
+            colloectMutabaleLivaData.setValue(user);
+        }
+        return  colloectMutabaleLivaData;
     }
 }
