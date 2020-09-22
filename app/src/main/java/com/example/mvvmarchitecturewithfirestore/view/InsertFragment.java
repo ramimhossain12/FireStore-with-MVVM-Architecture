@@ -1,6 +1,7 @@
 package com.example.mvvmarchitecturewithfirestore.view;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +26,10 @@ import com.example.mvvmarchitecturewithfirestore.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.Random;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 public class InsertFragment extends Fragment {
 
@@ -60,6 +65,24 @@ public class InsertFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 uploadImage();
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id= randomDigit();
+                String name= insertNameEditText.getText().toString();
+                String phone= insertPhoneEditText.getText().toString();
+                String email= insertEmailEditText.getText().toString();
+
+                if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(phone) && !TextUtils.isEmpty(email) && insertImageUri != null){
+                    Toast.makeText(getActivity(),"Ok",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getActivity(),"Please fill all field",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
@@ -98,5 +121,21 @@ public class InsertFragment extends Fragment {
                 Exception error = result.getError();
             }
         }
+
+
+    }
+
+    //generate a random digit.........
+    private String randomDigit() {
+
+        char[] chars = "1234567890".toCharArray();
+        StringBuilder stringBuilder = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 4; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            stringBuilder.append(c);
+        }
+        return stringBuilder.toString();
+
     }
 }
