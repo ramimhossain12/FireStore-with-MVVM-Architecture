@@ -70,5 +70,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
 
+    //crop image...
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
 }
 apply plugin: 'com.google.gms.google-services'
