@@ -73,5 +73,9 @@ dependencies {
     //crop image...
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 
+    //for spots dialogue
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
+
 }
 apply plugin: 'com.google.gms.google-services'
