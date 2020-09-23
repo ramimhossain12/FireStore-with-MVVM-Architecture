@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,6 +25,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mvvmarchitecturewithfirestore.R;
+import com.example.mvvmarchitecturewithfirestore.model.ContactUser;
+import com.example.mvvmarchitecturewithfirestore.viewmodel.ContactViewModel;
+import com.example.mvvmarchitecturewithfirestore.viewmodel.SignInViewModel;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -38,7 +43,8 @@ public class InsertFragment extends Fragment {
     private EditText insertPhoneEditText;
     private Button saveButton;
     private EditText insertEmailEditText;
-    private Uri insertImageUri;
+    private Uri insertImageUri = null;
+    private ContactViewModel contactViewModel;
 
     public InsertFragment() {
         // Required empty public constructor
@@ -55,6 +61,8 @@ public class InsertFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        initialViewModel();
 
         insertImageView = view.findViewById(R.id.insertImageId);
         insertNameEditText = view.findViewById(R.id.insertNameId);
@@ -77,7 +85,27 @@ public class InsertFragment extends Fragment {
                 String email= insertEmailEditText.getText().toString();
 
                 if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(phone) && !TextUtils.isEmpty(email) && insertImageUri != null){
-                    Toast.makeText(getActivity(),"Ok",Toast.LENGTH_SHORT).show();
+
+
+                    //show spots dialogue here.....
+                    final AlertDialog dialogue= new SpotsDialog.Builder().setContext(getActivity()).setTheme(R.style.Custom).setCancelable(true).build();
+                    dialogue.show();
+
+
+                    ContactUser user= new ContactUser(id,name,"image_uri",phone,email);
+                    contactViewModel.insert(user, insertImageUri);
+                    contactViewModel.insertResultLiveData.observe(getViewLifecycleOwner(), new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            dialogue.dismiss();
+                            Toast.makeText(getActivity(), ""+s, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    insertImageView.setImageResource(R.drawable.profile);
+                    insertNameEditText.setText("");
+                    insertPhoneEditText.setText("");
+                    insertEmailEditText.setText("");
                 }
                 else {
                     Toast.makeText(getActivity(),"Please fill all field",Toast.LENGTH_SHORT).show();
@@ -86,6 +114,15 @@ public class InsertFragment extends Fragment {
             }
         });
     }
+
+    private void initialViewModel() {
+
+        contactViewModel= new ViewModelProvider(getActivity(),ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication()))
+                .get(ContactViewModel.class);
+
+
+    }
+
 
     private void uploadImage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
